@@ -33,7 +33,7 @@ if (isEdit) {
   var taskDataObj = {
     name: taskNameInput,
     type: taskTypeInput,
-    status: "To Do"
+    status: "to do"
   };
 
   // send it as an argument to createTaskEl
@@ -77,11 +77,23 @@ listItemEl.appendChild(taskInfoEl);
 
 var taskActionsEl = createTaskActions(taskIdCounter);
 listItemEl.appendChild(taskActionsEl);
-tasksToDoEl.appendChild(listItemEl);
 
-
-// add entire list item to list
-tasksToDoEl.appendChild(listItemEl);
+switch (taskDataObj.status) {
+  case "to do":
+    taskActionsEl.querySelector("select[name='status-change']").selectedIndex = 0;
+    tasksToDoEl.append(listItemEl);
+    break;
+  case "in progress":
+    taskActionsEl.querySelector("select[name='status-change']").selectedIndex = 1;
+    tasksInProgressEl.append(listItemEl);
+    break;
+  case "completed":
+    taskActionsEl.querySelector("select[name='status-change']").selectedIndex = 2;
+    tasksCompletedEl.append(listItemEl);
+    break;
+  default:
+    console.log("Something went wrong!");
+}
 
 //add task id to the task object
 taskDataObj.id = taskIdCounter;
@@ -123,7 +135,7 @@ var createTaskActions = function(taskId) {
   //append to the created div
   actionContainerEl.appendChild(statusSelectEl);
 //create choices for status dropdown
-  var statusChoices = ["To Do", "In Progress", "Completed"];
+  var statusChoices = ["to do", "in progress", "completed"];
 
   for (var i = 0; i < statusChoices.length; i++) {
     //create option element
@@ -230,11 +242,12 @@ var loadTasks = function() {
     console.log("Saved tasks found!")
   //convert tasks from strings to array of objects
     savedTasks = JSON.parse(savedTasks);
-  //iterate through task array and create task elements on the page
-    for (var i = 0; i < savedTasks.length; i++) {
-      createTaskEl(savedTasks[i]);
-      console.log(tasks[i]);
-    }
+  // loop through savedTasks array
+  for (var i = 0; i < savedTasks.length; i++) {
+  // pass each task object into the `createTaskEl()` function
+  createTaskEl(savedTasks[i]);
+}
+
 };
 
 formEl.addEventListener("submit", taskFormHandler);
